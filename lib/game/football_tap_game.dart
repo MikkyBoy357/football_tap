@@ -4,6 +4,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:football_tap/components/background.dart';
 import 'package:football_tap/components/ball.dart';
+import 'package:football_tap/components/current_best.dart';
 import 'package:football_tap/components/player.dart';
 
 import '../blocs/game/game_cubit.dart';
@@ -17,6 +18,7 @@ class FootballTapGame extends FlameGame {
   late Ball ball;
   late Player player;
   late Score score;
+  late CurrentBest currentBest;
 
   @override
   Color backgroundColor() => Colors.green;
@@ -25,19 +27,16 @@ class FootballTapGame extends FlameGame {
   Future<void> onLoad() async {
     super.onLoad();
 
+    // await add(FlameMultiBlocProvider(providers: []));
+
     final width = size.x;
     final height = size.y;
     final playerPosition = Vector2(width / 2, height / 1.25);
 
-    score = Score(
-      cubit: cubit,
-      initialScore: 0,
-    );
+    score = Score(cubit: cubit, initialScore: 0);
 
-    player = Player(
-      position: playerPosition,
-      radius: 50.0,
-    );
+    player = Player(position: playerPosition, radius: 50.0);
+    currentBest = CurrentBest(shouldDisplay: true, cubit: cubit);
 
     ball = Ball()
       ..onTapped = () {
@@ -54,10 +53,6 @@ class FootballTapGame extends FlameGame {
         ball.reset(); // reset position + stop gravity
       };
 
-    addAll([
-      Background(),
-      score,
-      ball,
-    ]);
+    addAll([Background(), currentBest, score, ball]);
   }
 }

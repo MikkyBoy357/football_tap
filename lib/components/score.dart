@@ -19,29 +19,27 @@ List<Color> colors = [
   Colors.teal,
 ];
 
-class Score extends TextComponent with HasGameRef {
+class Score extends TextComponent with HasGameReference {
   final GameCubit cubit;
   late final StreamSubscription _sub;
 
-  Score({
-    required this.cubit,
-    int initialScore = 0,
-  }) : super(
-          text: '$initialScore',
-          anchor: Anchor.topCenter,
-          textRenderer: TextPaint(
-            style: const TextStyle(
-              fontSize: 88,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+  Score({required this.cubit, int initialScore = 0})
+    : super(
+        text: '$initialScore',
+        anchor: Anchor.topCenter,
+        textRenderer: TextPaint(
+          style: const TextStyle(
+            fontSize: 88,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
-        );
+        ),
+      );
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    position = Vector2(gameRef.size.x / 2, 80);
+    position = Vector2(game.size.x / 2, 80);
 
     // Listen for cubit state changes
     _sub = cubit.stream.listen((state) {
@@ -51,12 +49,14 @@ class Score extends TextComponent with HasGameRef {
         setScore(state.points);
 
         textRenderer = TextPaint(
-          style: size88weight700.copyWith(
-            color: Colors.greenAccent,
-          ),
+          style: size88weight700.copyWith(color: Colors.greenAccent),
         );
 
-        log("GameOver -> score=${state.points}, currentBest=${state.currentBest}, highScore=${state.highScore}");
+        text = '${state.currentBest}';
+
+        log(
+          "GameOver -> score=${state.points}, currentBest=${state.currentBest}, highScore=${state.highScore}",
+        );
       }
     });
   }
@@ -76,11 +76,7 @@ class Score extends TextComponent with HasGameRef {
     }
 
     textRenderer = TextPaint(
-      style: TextStyle(
-        fontSize: 88,
-        fontWeight: FontWeight.bold,
-        color: color,
-      ),
+      style: TextStyle(fontSize: 88, fontWeight: FontWeight.bold, color: color),
     );
   }
 

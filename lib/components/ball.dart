@@ -10,10 +10,10 @@ typedef BallTapCallback = void Function();
 typedef BallOutOfBoundsCallback = void Function();
 
 class Ball extends SpriteComponent
-    with HasGameRef<FootballTapGame>, TapCallbacks {
+    with HasGameReference<FootballTapGame>, TapCallbacks {
   double velocityY = 0.0;
-  final double gravity = 600;
-  final double jumpStrength = -400;
+  final double gravity = 1400;
+  final double jumpStrength = -800;
 
   bool gravityEnabled = false;
 
@@ -24,13 +24,10 @@ class Ball extends SpriteComponent
 
   @override
   FutureOr<void> onLoad() async {
-    final ball = await gameRef.loadSprite(Assets.ball);
+    final ball = await game.loadSprite(Assets.ball);
 
     size = Vector2(120, 125);
-    initialPosition = Vector2(
-      gameRef.size.x / 2,
-      gameRef.size.y - (size.y * 2),
-    );
+    initialPosition = Vector2(game.size.x / 2, game.size.y - (size.y * 2));
 
     position = initialPosition.clone();
     sprite = ball;
@@ -59,7 +56,7 @@ class Ball extends SpriteComponent
     velocityY += gravity * dt;
     position.y += velocityY * dt;
 
-    if (position.y - size.y / 2 > gameRef.size.y) {
+    if (position.y - size.y / 2 > game.size.y) {
       // out of bounds
       onOutOfBounds?.call();
     }
